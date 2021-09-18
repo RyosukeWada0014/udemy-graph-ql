@@ -1,15 +1,6 @@
-import gql from "graphql-tag";
 import client from "./client";
 import { ApolloProvider, Query } from "react-apollo";
-
-const ME = gql`
-  query me {
-    user(login: "iteachonudemy") {
-      name
-      avatarUrl
-    }
-  }
-`;
+import { ME } from "./graphql";
 
 const App = () => {
   return (
@@ -21,8 +12,7 @@ const App = () => {
 
           console.log(data);
           return <div>{data.user.name}</div>;
-        }
-        }
+        }}
       </Query>
       <div className="App">
         <div>Hello</div>
