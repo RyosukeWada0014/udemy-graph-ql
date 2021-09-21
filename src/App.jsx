@@ -3,7 +3,7 @@ import { ApolloProvider, Query } from "react-apollo";
 import { SEARCH_REPOSITORIES } from "./graphql";
 import { useState } from "react";
 
-const VARIABLES = {
+const DEFAULT_STATE = {
   first: 5,
   after: null,
   last: null,
@@ -12,12 +12,23 @@ const VARIABLES = {
 };
 
 const App = () => {
-  const [variables, setVariables] = useState(VARIABLES)
+  const [variables, setVariables] = useState(DEFAULT_STATE);
 
-  const {first, after, last, before, query,} = variables
+  const { first, after, last, before, query } = variables;
+  const handleChange = (e) => {
+    e.preventDefault();
+    setVariables({ ...variables, query: e.target.value });
+  };
+  console.log(query);
   return (
     <ApolloProvider client={client}>
-      <Query query={SEARCH_REPOSITORIES} variables={{first, after, last, before, query,}} >
+      <form>
+        <input value={query} onChange={handleChange} />
+      </form>
+      <Query
+        query={SEARCH_REPOSITORIES}
+        variables={{ first, after, last, before, query }}
+      >
         {({ loading, error, data }) => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
@@ -26,9 +37,7 @@ const App = () => {
           return <div>{}</div>;
         }}
       </Query>
-      <div className="App">
-        <div>Hello</div>
-      </div>
+
     </ApolloProvider>
   );
 };
