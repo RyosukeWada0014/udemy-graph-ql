@@ -26,8 +26,24 @@ const App = () => {
     setVariables({ ...variables, query: e.target.value });
   };
 
+  const goPrevious = (search) => {
+    setVariables({
+      ...variables,
+      first: null,
+      after: null,
+      last: PER_PAGE,
+      before: search.pageInfo.startCursor,
+    });
+  };
+
   const goNext = (search) => {
-    setVariables({ ...variables, after: search.pageInfo.endCursor });
+    setVariables({
+      ...variables,
+      first: PER_PAGE,
+      after: search.pageInfo.endCursor,
+      last: null,
+      before: null,
+    });
   };
 
   return (
@@ -69,6 +85,9 @@ const App = () => {
                   );
                 })}
               </ul>
+              {search.pageInfo.hasPreviousPage === true ? (
+                <button onClick={() => goPrevious(search)}>Previous</button>
+              ) : null}
               {search.pageInfo.hasNextPage === true ? (
                 <button onClick={() => goNext(search)}>Next</button>
               ) : null}
