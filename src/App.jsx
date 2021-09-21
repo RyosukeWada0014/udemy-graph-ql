@@ -3,6 +3,7 @@ import client from "./client";
 import { ApolloProvider, Query } from "react-apollo";
 import { SEARCH_REPOSITORIES } from "./graphql";
 import { useState } from "react";
+import { StarButton } from "./StarButton";
 
 const PER_PAGE = 5;
 
@@ -81,6 +82,8 @@ const App = () => {
                       >
                         {node.name}
                       </a>
+                      &nbsp;
+                      <StarButton node={node}/>
                     </li>
                   );
                 })}
