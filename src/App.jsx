@@ -4,8 +4,10 @@ import { ApolloProvider, Query } from "react-apollo";
 import { SEARCH_REPOSITORIES } from "./graphql";
 import { useState } from "react";
 
+const PER_PAGE = 5;
+
 const DEFAULT_STATE = {
-  first: 5,
+  first: PER_PAGE,
   after: null,
   last: null,
   before: null,
@@ -24,7 +26,10 @@ const App = () => {
     setVariables({ ...variables, query: e.target.value });
   };
 
-  console.log(query);
+  const goNext = (search) => {
+    setVariables({ ...variables, after: search.pageInfo.endCursor });
+  };
+
   return (
     <ApolloProvider client={client}>
       <form onSubmit={handleSubmit}>
@@ -43,22 +48,30 @@ const App = () => {
           const repositoryUnit =
             repositoryCount === 1 ? "Repository" : "Repositories";
           const title = `GitHub Repositories Search Results - ${repositoryCount} ${repositoryUnit}`;
+
           return (
             <>
               <h2>{title}</h2>;
               <ul>
                 {search.edges.map((edge) => {
-                  console.log(edge);
+                  // console.log(search.pageInfo);
                   const node = edge.node;
                   return (
                     <li key={node.id}>
-                      <a href={node.url}  target="_blank" >
+                      <a
+                        href={node.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {node.name}
                       </a>
                     </li>
                   );
                 })}
               </ul>
+              {search.pageInfo.hasNextPage === true ? (
+                <button onClick={() => goNext(search)}>Next</button>
+              ) : null}
             </>
           );
         }}
