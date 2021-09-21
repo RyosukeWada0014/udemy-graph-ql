@@ -13,16 +13,20 @@ const DEFAULT_STATE = {
 
 const App = () => {
   const [variables, setVariables] = useState(DEFAULT_STATE);
-
   const { first, after, last, before, query } = variables;
-  const handleChange = (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+  };
+
+  const handleChange = (e) => {
     setVariables({ ...variables, query: e.target.value });
   };
+
   console.log(query);
   return (
     <ApolloProvider client={client}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input value={query} onChange={handleChange} />
       </form>
       <Query
@@ -33,11 +37,13 @@ const App = () => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
 
-          console.log(data);
-          return <div>{}</div>;
+          const repositoryCount = data.search.repositoryCount;
+          const repositoryUnit =
+            repositoryCount === 1 ? "Repository" : "Repositories";
+          const title = `GitHub Repositories Search Results - ${repositoryCount} ${repositoryUnit}`;
+          return <h2>{title}</h2>;
         }}
       </Query>
-
     </ApolloProvider>
   );
 };
