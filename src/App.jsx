@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import client from "./client";
 import { ApolloProvider, Query, Mutation } from "react-apollo";
-import { SEARCH_REPOSITORIES, ADD_STAR } from "./graphql";
+import { SEARCH_REPOSITORIES, ADD_STAR, REMOVE_STAR } from "./graphql";
 import { useState } from "react";
 import { StarButton } from "./StarButton";
 
@@ -72,6 +72,7 @@ const App = () => {
               <ul>
                 {search.edges.map((edge) => {
                   const node = edge.node;
+                  const viewerHasStarred = node.viewerHasStarred;
                   return (
                     <li key={node.id}>
                       <a
@@ -82,9 +83,15 @@ const App = () => {
                         {node.name}
                       </a>
                       &nbsp;
-                      <Mutation mutation={ADD_STAR}>
-                        {(addStar) => (
-                          <StarButton node={node} addStar={addStar} />
+                      <Mutation
+                        mutation={viewerHasStarred ? REMOVE_STAR : ADD_STAR}
+                      >
+                        {(addOrRemoveStar) => (
+                          <StarButton
+                            node={node}
+                            addOrRemoveStar={addOrRemoveStar}
+                            viewerHasStarred={viewerHasStarred}
+                          />
                         )}
                       </Mutation>
                     </li>
