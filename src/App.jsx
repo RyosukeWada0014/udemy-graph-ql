@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import client from "./client";
-import { ApolloProvider, Query } from "react-apollo";
-import { SEARCH_REPOSITORIES } from "./graphql";
+import { ApolloProvider, Query, Mutation } from "react-apollo";
+import { SEARCH_REPOSITORIES, ADD_STAR } from "./graphql";
 import { useState } from "react";
 import { StarButton } from "./StarButton";
 
@@ -71,7 +71,6 @@ const App = () => {
               <h2>{title}</h2>;
               <ul>
                 {search.edges.map((edge) => {
-                  // console.log(search.pageInfo);
                   const node = edge.node;
                   return (
                     <li key={node.id}>
@@ -83,7 +82,11 @@ const App = () => {
                         {node.name}
                       </a>
                       &nbsp;
-                      <StarButton node={node}/>
+                      <Mutation mutation={ADD_STAR}>
+                        {(addStar) => (
+                          <StarButton node={node} addStar={addStar} />
+                        )}
+                      </Mutation>
                     </li>
                   );
                 })}
