@@ -85,12 +85,19 @@ const App = () => {
                       &nbsp;
                       <Mutation
                         mutation={viewerHasStarred ? REMOVE_STAR : ADD_STAR}
+                        refetchQueries={[
+                          {
+                            query: SEARCH_REPOSITORIES,
+                            variables: { first, after, last, before, query },
+                          },
+                        ]}
                       >
                         {(addOrRemoveStar) => (
                           <StarButton
                             node={node}
                             addOrRemoveStar={addOrRemoveStar}
                             viewerHasStarred={viewerHasStarred}
+                            {...{ first, after, last, before, query }}
                           />
                         )}
                       </Mutation>
