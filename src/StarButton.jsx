@@ -1,5 +1,14 @@
 ﻿export const StarButton = (props) => {
-  const { node, addOrRemoveStar, viewerHasStarred } = props;
+  const {
+    node,
+    addOrRemoveStar,
+    viewerHasStarred,
+    first,
+    after,
+    last,
+    before,
+    query,
+  } = props;
   const totalCount = node.stargazers.totalCount;
   const starCount = totalCount === 1 ? "1 star" : `${totalCount} stars`;
 
