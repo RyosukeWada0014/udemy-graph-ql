@@ -4,6 +4,7 @@ import { ApolloProvider, Query, Mutation } from "react-apollo";
 import { SEARCH_REPOSITORIES, ADD_STAR, REMOVE_STAR } from "./graphql";
 import { useState } from "react";
 import { StarButton } from "./StarButton";
+import { useForm } from "react-hook-form";
 
 const PER_PAGE = 5;
 
@@ -12,19 +13,25 @@ const DEFAULT_STATE = {
   after: null,
   last: null,
   before: null,
-  query: "フロントエンドエンジニア",
+  query: "",
 };
 
 const App = () => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [variables, setVariables] = useState(DEFAULT_STATE);
   const { first, after, last, before, query } = variables;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  const handleChange = (e) => {
-    setVariables({ ...variables, query: e.target.value });
+  const handleOnSubmit = (data) => {
+    setVariables({
+      ...variables,
+      query: data.text,
+    });
+    reset();
   };
 
   const goPrevious = (search) => {
@@ -49,8 +56,11 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <form onSubmit={handleSubmit}>
-        <input value={query} onChange={handleChange} />
+      <form onSubmit={handleSubmit(handleOnSubmit)}>
+        <input type="text" {...register("text", { required: true })} />
+        <input type="submit" value="Submit" />
+        <br />
+        {errors.text && <span>入力してください</span>}
       </form>
       <Query
         query={SEARCH_REPOSITORIES}
